@@ -16,7 +16,7 @@ class AppFixtures extends Fixture
 
     public function __construct(UserPasswordHasherInterface $hasher)
     {
-        $this->faker = Factory::create('fr_Fr');
+        $this->faker = Factory::create('fr_FR');
         $this->hasher = $hasher;
     }
 
@@ -26,11 +26,17 @@ class AppFixtures extends Fixture
         for ($u = 0; $u < 10; $u++) {
             $user = new User();
 
-            $user->setusername($this->faker->username)
-                ->setEmail($this->faker->email)
+            $hashedPassword = $this->hasher->hashPassword(
+                //implementer PasswordAuthenticatedUserInterface dans entité User avant
+                $user,
+                'password'
+            );
+
+            $user->setUsername($this->faker->name())
+                ->setEmail($this->faker->email())
                 ->setPassword($hashedPassword)
-                ->getRoles()
-                ->setLinkHub($this->faker->link());
+                ->setRoles(['ROLE_USER'])
+                ->setLinkHub('https://github.com/exemple/');
             $users[] = $user;
             $manager->persist($user);
 

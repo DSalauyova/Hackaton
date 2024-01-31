@@ -8,3 +8,5 @@ eraseCredentials(), getUserIdentifier() et toutes les methodes de UserInterface;
 
 composer require --dev orm-fixtures
 composer require fakerphp/faker
+
+creation d'une contrainte GitHub dans le src/Validator/Constraints/

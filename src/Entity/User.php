@@ -6,10 +6,11 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\Constraints\GitHubConstraint;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -61,6 +62,7 @@ class User implements UserInterface
 
 
     #[ORM\Column(length: 255)]
+    #[GitHubConstraint]
     private ?string $link_hub = null;
 
     #[ORM\Column]
@@ -75,13 +77,20 @@ class User implements UserInterface
     {
         return $this->id;
     }
-
-    public function getusername(): ?string
+    /**
+     * Get the value of username
+     */
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setusername(string $username): static
+    /**
+     * Set the value of username
+     *
+     * @return  self
+     */
+    public function setUsername(?string $username)
     {
         $this->username = $username;
 
@@ -127,7 +136,7 @@ class User implements UserInterface
     /**
      * Get the value of password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
