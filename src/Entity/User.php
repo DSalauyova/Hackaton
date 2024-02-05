@@ -3,13 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints\GitHubConstraint;
+
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,8 +28,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\Length(min: 5, max: 100)]    #[Assert\Email]
+    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Email]
     private ?string $email = null;
+
+    #[Assert\Regex(
+        pattern: '/[A-Z]/',
+        message: 'Votre mot de passe doit contenir au moins une lettre majuscule.'
+    )]
+    private ?string $plainPassword = null;
 
     //password
     #[ORM\Column]
@@ -34,8 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(
         min: 8,
         max: 4096, // Longueur maximale pour éviter des attaques de déni de service
-        minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caractères.',
-        maxMessage: 'Votre mot de passe ne peut pas contenir plus de {{ limit }} caractères.'
+        minMessage: 'Votre mot de passe doit contenir minimum 8 caractères.'
     )]
     #[Assert\Regex(
         pattern: '/[A-Z]/',
@@ -53,23 +64,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/[\W]/',
         message: 'Votre mot de passe doit contenir au moins un caractère spécial.'
     )]
-    private ?string $password;
+    //ici on doit bien respecter les contraintes avec la valeur, qui peut pas etre 'null' ou '123" 
+    private ?string $password = "Initialized1!";
 
     #[ORM\Column]
     #[Assert\NotNull()]
     private array $roles = [];
 
-
-    #[ORM\Column(length: 255)]
-    #[GitHubConstraint]
-    private ?string $link_hub = null;
-
     #[ORM\Column]
+    #[Assert\NotNull()]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: GitLink::class)]
+    private Collection $gitLinks;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->gitLinks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -89,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @return  self
      */
-    public function setUsername(?string $username)
+    public function setUsername(string $username): self
     {
         $this->username = $username;
 
@@ -104,18 +116,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getLinkHub(): ?string
-    {
-        return $this->link_hub;
-    }
-
-    public function setLinkHub(string $link_hub): static
-    {
-        $this->link_hub = $link_hub;
 
         return $this;
     }
@@ -152,6 +152,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+    }
     /**
      * Get the value of roles
      */
@@ -185,5 +196,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, GitLink>
+     */
+    public function getGitLinks(): Collection
+    {
+        return $this->gitLinks;
+    }
+
+    public function addGitLink(GitLink $gitLink): static
+    {
+        if (!$this->gitLinks->contains($gitLink)) {
+            $this->gitLinks->add($gitLink);
+            $gitLink->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGitLink(GitLink $gitLink): static
+    {
+        if ($this->gitLinks->removeElement($gitLink)) {
+            // set the owning side to null (unless already changed)
+            if ($gitLink->getUser() === $this) {
+                $gitLink->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\GitLink;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -31,23 +32,26 @@ class AppFixtures extends Fixture
                 $user,
                 'password'
             );
-
             $user->setUsername($this->faker->name())
                 ->setEmail($this->faker->email())
                 ->setPassword($hashedPassword)
-                ->setRoles(['ROLE_USER'])
-                ->setLinkHub('https://github.com/exemple/');
+                ->setRoles(['ROLE_USER']);
             $users[] = $user;
             $manager->persist($user);
-
-
-
-            //$users[] = $user;
-
         }
-        // $product = new Product();
-        // $manager->persist($product);
 
+        //git-links
+        $links = [];
+        for ($li = 0; $li < 40; $li++) {
+            $gitLink = new GitLink();
+            // Générer un URL GitHub
+            $gitUrlGenerated = 'https://github.com/' . $this->faker->regexify('[a-zA-Z0-9]{5,10}');
+            $gitLink->setUrl($gitUrlGenerated)
+                //->setReport()
+                ->setUser($users[mt_rand(0, count($users) - 1)]);
+            $links[] = $gitLink;
+            $manager->persist($gitLink);
+        }
         $manager->flush();
     }
 }

@@ -11,6 +11,8 @@ composer require fakerphp/faker
 
 creation d'une contrainte GitHub dans le src/Validator/Constraints/
 +entité +fixtures
+ajouter la contrainte dans l'entité user
+! pas de setter pour les contraintes
 
 composer require symfony/form pour les formulaires  
 
@@ -28,3 +30,30 @@ npm install sass-loader@^14.0.0 sass --save-dev
 
 .enableSassLoader() -> Encore (webpack.config.js)
 cmd : npx encore dev
+
+twig : 
+autocomplete : activer Emmet 
+    "emmet.includeLanguages": {
+        "twig": "html"
+    },
+    "files.associations": {
+        "*.twig": "html"
+    },
+
+config d Auth :    
+in security.yaml : 
+providers:
+        app_login:
+            entity:
+                class: App\Entity\User
+                property: email
+in UserAuthentificatorAuthenticator : 
+indiquer identificateur unique => $email = $request->request->get('email');
+
+$request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+
+        return new Passport(
+            new UserBadge($email),
+        )
+
+make:registration-form : Génère un formulaire d'inscription pour les utilisateurs, y compris le contrôleur et le template.
