@@ -5,8 +5,16 @@
 
 {% block body %}
 
-
 <div class="container mt-5" style="margin: 0 auto; width: 40%;">
+	{# Vérifier si un message d'erreur existe #}
+	{% if error %}
+	<div class="alert alert-danger">
+		{% if error.messageKey == 'Invalid credentials.' %}
+		<p>Le mot de passe est incorrect,</p>
+		<p>Veuillez réessayer</p>
+		{% endif %}
+	</div>
+	{% endif %}
 	<div class="card border-dark mb-3" style="max-width: 40rem; color:aliceblue" ;>
 		{% for message in app.flashes('warning') %}
 		<div class="alert alert-warning">
@@ -27,8 +35,5 @@
 			</form>
 		</div>
 	</div>
-
-
-
 </div>
 {% endblock %}

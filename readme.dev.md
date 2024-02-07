@@ -57,3 +57,5 @@ $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
         )
 
 make:registration-form : Génère un formulaire d'inscription pour les utilisateurs, y compris le contrôleur et le template.
+
+pour donner un lien depuis la page login -› passer par UserAuthentificatorAuthenticator class

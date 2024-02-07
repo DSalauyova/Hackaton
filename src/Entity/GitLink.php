@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\GitLinkRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: GitLinkRepository::class)]
 class GitLink
@@ -14,7 +16,11 @@ class GitLink
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 4056, nullable: true)]
+    // #[Assert\Regex(
+    //     pattern: '/^(github|gitlab).*/i',
+    //     message: 'Vous devez saisir url "github" ou "gitlab" valable.'
+    // )]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
