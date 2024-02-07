@@ -37,7 +37,6 @@ class GitFormType extends AbstractType
                         new Callback([$this, 'validateUrl']),
 
                     ]
-
                 ]
             )
             ->add(
@@ -47,7 +46,7 @@ class GitFormType extends AbstractType
                     'attr' => [
                         'class' => 'btn btn-info mt-5'
                     ],
-                    'label' => 'Generer un Rapport'
+                    'label' => 'Génerer le Rapport'
                 ]
             );
     }

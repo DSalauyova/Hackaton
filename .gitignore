@@ -16,7 +16,7 @@
 /public/assets/
 /assets/vendor
 ###< symfony/asset-mapper ###
-/readme.dev.md
+readme.dev.md
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
@@ -24,3 +24,4 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
