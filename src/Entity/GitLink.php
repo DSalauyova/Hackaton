@@ -17,10 +17,6 @@ class GitLink
     private ?int $id = null;
 
     #[ORM\Column(length: 4056, nullable: true)]
-    // #[Assert\Regex(
-    //     pattern: '/^(github|gitlab).*/i',
-    //     message: 'Vous devez saisir url "github" ou "gitlab" valable.'
-    // )]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

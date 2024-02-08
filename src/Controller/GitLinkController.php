@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\GitLink;
 use App\Form\GitFormType;
+use App\Repository\GitLinkRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GitLinkController extends AbstractController
 {
+    //recuperer le lien git fourni par user
     #[Route('/link', name: 'app_git_link', methods: ['GET', 'POST'])]
     public function getLink(
         Request $request,
@@ -29,5 +31,11 @@ class GitLinkController extends AbstractController
         return $this->render('git_link/link.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    //recuperer le lien git depuis la bd
+    public function listenLink(
+        GitLinkRepository $gitLinkRepository
+    ) {
     }
 }
