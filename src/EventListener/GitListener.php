@@ -60,8 +60,9 @@ class GitListener
         // Ждем завершения процесса
         //$process->wait();
 
+        $projectPath = '/Users/JIJI/Desktop/FORMATION/Hackaton';
         // Определение команды для запуска терминала и выполнения команды в нем.
-        $process = Process::fromShellCommandline("osascript -e 'tell application \"Terminal\" to do script \"php vendor/bin/psalm; exec bash'");
+        $process = Process::fromShellCommandline("osascript -e 'tell application \"Terminal\" to do script \"cd " . $projectPath . "; php vendor/bin/psalm; exec bash\"'");
         $process->run();
 
 

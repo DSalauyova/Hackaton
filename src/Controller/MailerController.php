@@ -26,7 +26,6 @@ class MailerController extends AbstractController
             return $this->render('mail/mail.html.twig');
         } catch (\Throwable $th) {
             throw $th;
-            dd($th);
         }
     }
 }
